@@ -1,0 +1,119 @@
+{
+    "fileAssociations": {
+        "resources/js/Pages/**/*.vue": {
+            "relatedFiles": [
+                "app/Http/Controllers/*Controller.php",
+                "routes/*.php",
+                "app/Models/*.php",
+                "resources/js/Components/**/*.vue"
+            ],
+            "watchPatterns": [
+                "resources/js/Layouts/*.vue",
+                "resources/css/*.css"
+            ]
+        },
+        "app/Http/Controllers/*Controller.php": {
+            "relatedFiles": [
+                "app/Models/*.php",
+                "resources/js/Pages/**/*.vue",
+                "routes/*.php",
+                "app/Http/Requests/*.php",
+                "app/Http/Resources/*.php"
+            ],
+            "watchPatterns": [
+                "app/Services/*.php",
+                "app/Repositories/*.php"
+            ]
+        },
+        "routes/*.php": {
+            "relatedFiles": [
+                "app/Http/Controllers/*Controller.php",
+                "resources/js/Pages/**/*.vue",
+                "app/Http/Middleware/*.php"
+            ]
+        },
+        "app/Models/*.php": {
+            "relatedFiles": [
+                "app/Http/Controllers/*Controller.php",
+                "database/migrations/*_create_*_table.php",
+                "app/Observers/*.php"
+            ],
+            "watchPatterns": [
+                "app/Traits/*.php",
+                "database/factories/*.php",
+                "database/seeders/*.php"
+            ]
+        },
+        "resources/js/Layouts/*.vue": {
+            "relatedFiles": [
+                "resources/js/Components/*.vue",
+                "resources/css/*.css"
+            ]
+        }
+    },
+    "ignorePaths": [
+        "node_modules/**",
+        "vendor/**",
+        "public/**",
+        "storage/**",
+        "bootstrap/cache/**",
+        ".git/**",
+        "tests/**"
+    ],
+    "cursorBehavior": {
+        "followImports": true,
+        "followRoutes": true,
+        "followComponents": true,
+        "followServices": true,
+        "followEvents": true,
+        "maxDepth": 3
+    },
+    "contextSize": {
+        "default": 5,
+        "components": 10,
+        "controllers": 15,
+        "models": 12,
+        "migrations": 20,
+        "tests": 8
+    },
+    "specialFiles": {
+        "STATUS.md": {
+            "updateFrequency": "onCommit",
+            "relatedChanges": true,
+            "notifyOnChange": true
+        },
+        ".env": {
+            "updateFrequency": "manual",
+            "requireReview": true
+        },
+        "composer.json": {
+            "watchDependencies": true,
+            "notifyOnUpdate": true
+        },
+        "package.json": {
+            "watchDependencies": true,
+            "notifyOnUpdate": true
+        }
+    },
+    "autoComplete": {
+        "enableIntelliSense": true,
+        "suggestImports": true,
+        "includeDocBlocks": true
+    },
+    "formatting": {
+        "vue": {
+            "indent": 2,
+            "attributeOrder": [
+                "v-model",
+                "v-if",
+                "v-show",
+                "v-for",
+                "@click"
+            ]
+        },
+        "php": {
+            "indent": 4,
+            "lineLength": 120
+        }
+    }
+}
