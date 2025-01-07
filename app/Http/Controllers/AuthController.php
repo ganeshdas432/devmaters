@@ -47,8 +47,9 @@ class AuthController extends Controller
             'mobile' => 'required|string',
             'age' => 'required|numeric',
             'gender' => 'required|string|in:male,female,other',
-            'status' => 'required|string|in:0,1',
-            'role' => 'required|string|in:vendor,customer,rider'
+            'status' => 'required',
+            'role' => 'required|string|in:vendor,customer,rider',
+            'zone_id' => 'required|numeric'
         ]);
 
         if ($validator->fails()) {
@@ -66,7 +67,8 @@ class AuthController extends Controller
             'age' => $request->age,
             'gender' => $request->gender,
             'status' => $request->status,
-            'role' => $request->role
+            'role' => $request->role,
+            'zone_id' => $request->zone_id
         ]);
 
         return response()->json([
@@ -96,24 +98,7 @@ class AuthController extends Controller
     }
 
 
-    public function getCounts()
-    {
-        // Get total counts by user_type
-        $customerCount = User::where('role', 'customer')->count();
-        $vendorCount = User::where('role', 'vendor')->count();
-        $riderCount = user::where('role', 'rider')->count();
-        $orderCount = Order::count();
-        $productCount = Product::count();
 
-        // Return the counts as a JSON response
-        return response()->json([
-            'customer_count' => $customerCount,
-            'vendor_count' => $vendorCount,
-            'rider_count' => $riderCount,
-            'product_count' => $productCount,
-            'order_count' => $orderCount,
-        ]);
-    }
 
     public function user_by_usertype($usertype)
     {
@@ -143,5 +128,20 @@ class AuthController extends Controller
         Log::info('User updated successfully', ['user' => $user]);
 
         return back()->with('success', 'User status updated successfully.');
+    }
+
+    public function view($id)
+    {
+        $response = User::with('kyc')->findOrFail($id);
+        return response()->json(['user' => $response]);
+    }
+
+    public function activateAccount($id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = 1; // Set status to active
+        $user->save();
+
+        return response()->json(['message' => 'Account activated successfully']);
     }
 }

@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
@@ -8,35 +9,54 @@
 
         <div class="py-12">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-lg font-semibold mr-4">Category List</h4>
-                    <a class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ml-4" :href="route('category.add')">
-                        Add Category
-                    </a>
+                <div class="card p-6 mb-8">
+                    <form @submit.prevent="submitForm" class="w-full">
+                        <div class="flex flex-wrap gap-4 mb-4">
+                            <div class="flex-1 min-w-[200px]">
+                                <label for="title" class="block text-sm font-medium mb-1">Category Name</label>
+                                <InputText id="title" v-model="Form.title" class="w-full p-2 border rounded" />
+                            </div>
+                            <div class="flex-1 min-w-[200px]">
+                                <label for="shop_type" class="block text-sm font-medium mb-1">Shop Type</label>
+                                <Select id="shop_type" v-model="Form.shop_type" :options="shoptype" optionLabel="name"
+                                    optionValue="code" placeholder="Select Shop Type" class="w-full  border rounded" />
+                            </div>
+                            <div class="flex-1 min-w-[200px]">
+                                <label class="block text-sm font-medium mb-1">Image</label>
+                                <FileUpload mode="basic" name="demo[]" accept="image/*" :maxFileSize="1000000"
+                                    :auto="false" chooseLabel="Browse" @select="onFileSelect" class="w-full" />
+                            </div>
+                        </div>
+                        <Button type="submit" class="btn btn-primary w-full">Submit</Button>
+                    </form>
                 </div>
                 <div class="card">
                     <DataTable :value="categories" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                         tableStyle="min-width: 50rem">
                         <Column field="id" header="ID" style="width: 25%"></Column>
-                        <Column header="Image" >
+                        <Column header="Image">
                             <template #body="slotProps">
                                 <Image :src="`/storage/${slotProps.data.image}`" alt="Image" width="100" />
                             </template>
                         </Column>
                         <Column field="title" header="Title" style="width: 25%"></Column>
                         <Column field="shop_type" header="Shop Type" style="width: 25%"></Column>
-                        
+                        <Column field="description" header="Description" style="width: 25%"></Column>
+
                         <Column header="Actions" style="width: 4rem">
                             <template #body="slotProps">
-                                <Button type="button" icon="pi pi-pencil" text size="small" @click="handleEdit(slotProps.data)" />
+                                <Button type="button" icon="pi pi-pencil" text size="small"
+                                    @click="handleEdit(slotProps.data)" />
 
-                                <Button type="button" icon="pi pi-trash" text size="small" @click="handleDelete(slotProps.data)" />
+                                <Button type="button" icon="pi pi-trash" text size="small"
+                                    @click="handleDelete(slotProps.data)" />
                             </template>
                         </Column>
                     </DataTable>
                 </div>
             </div>
         </div>
+        <Toast ref="toast" />
     </AuthenticatedLayout>
 </template>
 
@@ -49,11 +69,16 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import axios from 'axios';
-
 import Image from 'primevue/image';
-
+import InputText from 'primevue/inputtext';
+import Select from 'primevue/select';
+import FileUpload from 'primevue/fileupload';
+import { useForm } from '@inertiajs/vue3';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 const categories = ref([]); // Reactive array to hold the categories
+const toast = ref(null); // Initialize toast
 
 // Fetch the list of categories on mount
 onMounted(async () => {
@@ -68,7 +93,8 @@ onMounted(async () => {
 // Action handler for Edit click
 function handleEdit(rowData) {
     Inertia.visit(`/category/edit/${rowData.id}`);
-  }
+}
+
 // Action handler for Delete click
 function handleDelete(rowData) {
     if (confirm(`Are you sure you want to delete ${rowData.title}?`)) {
@@ -78,10 +104,63 @@ function handleDelete(rowData) {
                 console.log(response.data.message);
                 // Remove the deleted category from the categories list
                 categories.value = categories.value.filter((category) => category.id !== rowData.id);
+                toast.value.add({ severity: 'success', summary: 'Success', detail: response.data.message, life: 3000 });
             })
             .catch((error) => {
                 console.error('There was an error deleting the category:', error);
+                toast.value.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete category', life: 3000 });
             });
     }
 }
+
+// Initialize the shop form data using useForm
+const Form = useForm({
+    title: '',
+    shop_type: '',
+    image: null,
+});
+
+const onFileSelect = (event) => {
+    Form.image = event.files[0]; // Store the selected file
+};
+
+const shoptype = ref([
+    { name: 'Food Shop', code: 'food' },
+    { name: 'Grocery Shop', code: 'grocery' },
+]);
+
+const submitForm = async () => {
+    const formData = new FormData();
+
+    // Append other form data
+    formData.append('title', Form.title);
+    formData.append('shop_type', Form.shop_type);
+    if (Form.image) {
+        formData.append('image', Form.image);
+    }
+
+    try {
+        const response = await axios.post(route('category.store'), formData);
+        Form.reset();
+        Form.image = null; // Clear the upload field
+        toast.value.add({ severity: 'success', summary: 'Success', detail: response.data.success, life: 3000 });
+        // Refresh the list of categories
+        const categoryResponse = await axios.get('/api/catlist');
+        categories.value = categoryResponse.data.categories;
+    } catch (error) {
+        toast.value.add({ severity: 'error', summary: 'Error', detail: 'Failed to add category', life: 3000 });
+    }
+};
 </script>
+
+<style scoped>
+label {
+    margin-bottom: 0.25rem;
+    /* Adds space between label and input */
+}
+
+input {
+    margin-bottom: 1rem;
+    /* Adds space between input fields */
+}
+</style>

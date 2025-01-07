@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Appuser;
-
 use App\Models\User;
+use App\Models\Order;
+use App\Models\Product;
 
 
 
@@ -15,43 +16,35 @@ use App\Models\User;
 class AppUserController extends Controller
 {
 
-
-
-    public function store(Request $request)
+    public function profile($id)
     {
-
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'mobile' => 'required|string',
-            'address' => 'required|string',
-            'gender' => 'required|string',
-            'dob' => 'nullable|string',
-            'user_id' => 'nullable|string',
-            'user_type' => 'required|string',
-            'user_status' => 'required|string', // max 1MB
-
-        ]);
-
-
-
-        $user = Appuser::create([
-            'name' => $request->name,
-            'mobile' => $request->mobile,
-            'address' => $request->address,
-            'gender' => $request->gender,
-            'dob' => $request->dob,
-            'user_id' => $request->user_id,
-            'user_type' => $request->user_type,
-            'user_status' => $request->user_status,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User created successfully',
-            'data' => $user
-        ], 201);
+        return Inertia::render('appuser/UserProfile', ['userId' => $id]);
     }
+
+    public function add_rider()
+    {
+        return Inertia::render('appuser/AddRider');
+    }
+
+    public function Rider_list()
+    {
+        return Inertia::render('appuser/RiderList');
+    }
+
+
+    public function vendor_list()
+    {
+        return Inertia::render('appuser/VendorList');
+    }
+
+
+    public function customer_list()
+    {
+        return Inertia::render('appuser/CustomerList');
+    }
+
+
+
 
     public function updateStatus(Request $request, $id)
     {
@@ -82,5 +75,25 @@ class AppUserController extends Controller
                 'message' => 'Failed to update status: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+
+    public function getCounts()
+    {
+        // Get total counts by user_type
+        $customerCount = User::where('role', 'customer')->count();
+        $vendorCount = User::where('role', 'vendor')->count();
+        $riderCount = user::where('role', 'rider')->count();
+        $orderCount = Order::count();
+        $productCount = Product::count();
+
+        // Return the counts as a JSON response
+        return response()->json([
+            'customer_count' => $customerCount,
+            'vendor_count' => $vendorCount,
+            'rider_count' => $riderCount,
+            'product_count' => $productCount,
+            'order_count' => $orderCount,
+        ]);
     }
 }

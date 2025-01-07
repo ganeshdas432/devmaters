@@ -9,11 +9,16 @@ use App\Models\Product;
 use App\Models\Attribute;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 
 
 class ProductController extends Controller
 {
+
+    public function product_list(){
+        return Inertia::render('product/ProductList');
+    }
 
     public function index()
     {

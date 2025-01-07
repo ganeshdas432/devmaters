@@ -63,7 +63,8 @@
                         <Column field="status" header="Status" sortable style="width: 15%">
                             <template #body="slotProps">
                                 <Tag :value="slotProps.data.status.title"
-                                    :severity="getSeverity(slotProps.data.status.title)" class="text-xs px-3 py-1">
+                                    :severity="getSeverity(slotProps.data.status.title)"
+                                    class="text-xs px-3 py-1 cursor-pointer" @click="openStatusDialog(slotProps.data)">
                                     <i :class="getStatusIcon(slotProps.data.status.title)" class="mr-1"></i>
                                     {{ slotProps.data.status.title }}
                                 </Tag>
@@ -73,12 +74,10 @@
                         <Column header="Actions" :exportable="false" style="width: 15%">
                             <template #body="slotProps">
                                 <div class="flex gap-2 justify-center">
-                                    <Button icon="pi pi-pencil" text rounded severity="info"
-                                        @click="handleEdit(slotProps.data)" v-tooltip.top="'Edit Customer'" />
+                                  
                                     <Button icon="pi pi-eye" text rounded severity="success"
                                         v-tooltip.top="'View Details'" />
-                                    <Button icon="pi pi-trash" text rounded severity="danger"
-                                        v-tooltip.top="'Delete Customer'" />
+                                    
                                 </div>
                             </template>
                         </Column>
@@ -87,10 +86,27 @@
             </div>
         </div>
     </AuthenticatedLayout>
+
+    <Dialog v-model:visible="statusDialogVisible" header="Update Status" :modal="true" :closable="false">
+        <form @submit.prevent="updateStatus">
+            <div class="mb-4">
+                <label for="user_status" class="block text-sm font-medium mb-1">User Status</label>
+                <Select id="user_status" v-model="selectedStatus" :options="statusOptions" optionLabel="label"
+                    optionValue="value" placeholder="Select User Status" class="w-full p-1 border rounded" />
+                <p v-if="errors.user_status" class="text-red-500 text-sm">{{ errors.user_status }}</p>
+            </div>
+            <div class="flex justify-end mt-5">
+                <Button type="button" label="Cancel" class="p-button-secondary mr-2"
+                    @click="statusDialogVisible = false" />
+                <Button type="submit" label="Update" class="p-button-primary" />
+            </div>
+        </form>
+    </Dialog>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
@@ -100,6 +116,8 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Tooltip from 'primevue/tooltip';
+import Dialog from 'primevue/dialog';
+import Select from 'primevue/select';
 
 const customers = ref([]);
 const loading = ref(true);
@@ -107,6 +125,15 @@ const searchQuery = ref('');
 const filters = ref({
     global: { value: null, matchMode: 'contains' },
 });
+
+const statusDialogVisible = ref(false);
+const selectedStatus = ref(null);
+const selectedCustomer = ref(null);
+const errors = ref({});
+const statusOptions = [
+    { label: 'Active', value: 1 },
+    { label: 'Deactive', value: 2 }
+];
 
 const getStatusIcon = (status) => {
     switch (status) {
@@ -146,9 +173,30 @@ onMounted(() => {
     refreshData();
 });
 
-function handleEdit(rowData) {
-    Inertia.visit(`/appuser/edit/${rowData.id}`);
-}
+
+
+const openStatusDialog = (customer) => {
+    selectedCustomer.value = customer;
+    selectedStatus.value = customer.status.id;
+    statusDialogVisible.value = true;
+};
+
+const Form = useForm({
+    user_status: null,
+});
+
+const updateStatus = () => {
+    Form.user_status = selectedStatus.value;
+    Form.put(route('appuser.update', { id: selectedCustomer.value.id }), {
+        onSuccess: () => {
+            statusDialogVisible.value = false;
+            refreshData();
+        },
+        onError: (serverErrors) => {
+            errors.value = serverErrors;
+        }
+    });
+};
 </script>
 
 <style scoped>

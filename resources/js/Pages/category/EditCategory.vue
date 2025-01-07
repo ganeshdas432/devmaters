@@ -30,6 +30,11 @@
                 />
               </div>
 
+              <div>
+                <label for="description" class="block text-sm font-medium mb-1">Description</label>
+                <InputText id="description" v-model="Form.description" class="w-full p-2 border rounded" />
+              </div>
+
               <div class="card flex justify-center">
                 <FileUpload 
                       mode="basic" 
@@ -77,6 +82,7 @@ const shopTypes = ref([
 const Form = useForm({
   title: props.category?.title || '',
   shop_type: props.category?.shop_type || '',
+  description: props.category?.description || '',
   image: null,
 });
 
@@ -90,6 +96,7 @@ const submitForm = () => {
   const formData = new FormData();
   formData.append('title', Form.title);
   formData.append('shop_type', Form.shop_type);
+  formData.append('description', Form.description);
   if (shopForm.image) {
     formData.append('image', Form.image);
   }

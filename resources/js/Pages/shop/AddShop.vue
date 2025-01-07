@@ -278,6 +278,7 @@ const submitForm = async () => {
       mobile: mobile.value,
       status: status.value,
       role: role.value,
+      zone_id: shopForm.zone_id
     });
 
     console.log("Vendor Registration Response:", vendorResponse);

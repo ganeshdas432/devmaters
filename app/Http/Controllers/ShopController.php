@@ -10,6 +10,11 @@ use App\Models\Shop;
 class ShopController extends Controller
 {
 
+public function shoplist(){
+    return Inertia::render('shop/Shoplist');
+}
+
+    
     public function shoplistapi()
 {
     $shops = Shop::all(); // Or any other query you need

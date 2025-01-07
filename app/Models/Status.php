@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Status extends Model
 {
     use HasFactory;
-    protected $fillable=['title'];
+    protected $fillable = ['title'];
 
     public function users()
     {
-        return $this->hasMany(User::class, 'status');
+        return $this->hasMany(User::class, 'status', 'id'); // Define the relationship using status.id
     }
 }

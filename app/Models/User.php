@@ -24,8 +24,9 @@ class User extends Authenticatable
         'mobile',
         'age',
         'gender',
-        'status',
-        'role'
+        'status', // Use status as the foreign key
+        'role',
+        'zone_id',
     ];
 
     /**
@@ -47,7 +48,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'age' => 'integer',
-        'status' => 'boolean',
+        'status' => 'integer', // Cast status as integer
     ];
 
     public function isAdmin()
@@ -57,6 +58,10 @@ class User extends Authenticatable
 
     public function status()
     {
-        return $this->belongsTo(Status::class, 'status'); // 'status_id' is the foreign key
+        return $this->belongsTo(Status::class, 'status'); // Define the relationship using status
+    }
+    public function kyc()
+    {
+        return $this->hasMany(KycDocument::class, 'user_id');
     }
 }

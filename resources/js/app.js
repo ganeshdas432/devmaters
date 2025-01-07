@@ -10,6 +10,7 @@ import Aura from '@primevue/themes/aura';
 import 'primeicons/primeicons.css';
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';  // Import the Toast component
+import RadioButton from 'primevue/radiobutton';
 
 
 
@@ -34,6 +35,7 @@ createInertiaApp({
                 }
             })
             .component('Toast', Toast)
+            .component('RadioButton', RadioButton)
             .mount(el);
     },
     progress: {

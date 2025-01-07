@@ -17,7 +17,6 @@ class KycDocument extends Model
         'document_number',
         'front_image',
         'back_image',
-        'expiry_date',
         'status',
         'rejection_reason',
         'verified_by',
@@ -25,7 +24,6 @@ class KycDocument extends Model
     ];
 
     protected $casts = [
-        'expiry_date' => 'date',
         'verified_at' => 'datetime'
     ];
 

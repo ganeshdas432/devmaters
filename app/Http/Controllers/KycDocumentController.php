@@ -2,92 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\KycDocument;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use App\Models\KycDocument;
+use Inertia\Inertia;
 
 class KycDocumentController extends Controller
 {
+
+    public function kyc_upload($userId, $kycType)
+    {
+        return Inertia::render('appuser/KycUploadForm', ['userId' => $userId, 'kycType' => $kycType]);
+    }
     public function index()
     {
-        $documents = KycDocument::with(['user', 'verifier'])->latest()->get();
-        return response()->json($documents);
+        $kycDocuments = KycDocument::all();
+        return response()->json(['kyc_documents' => $kycDocuments]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'kyc_type' => 'required|in:vendor,rider',
+            'user_id' => 'required',
+            'kyc_type' => 'required|string',
             'document_type' => 'required|string',
             'document_number' => 'required|string',
-            'front_image' => 'required|image|max:2048',
-            'back_image' => 'nullable|image|max:2048',
-            'expiry_date' => 'nullable|date'
+            'front_image' => 'required|image',
+            'back_image' => 'required|image',
+            'status' => 'required|string|in:pending,approved,rejected',
+            'rejection_reason' => 'nullable|string'
         ]);
 
-        $frontImagePath = $request->file('front_image')->store('kyc_documents', 'public');
-        $backImagePath = null;
+        $frontImagePath = $request->file('front_image')->store('kyc_documents');
+        $backImagePath = $request->file('back_image')->store('kyc_documents');
 
-        if ($request->hasFile('back_image')) {
-            $backImagePath = $request->file('back_image')->store('kyc_documents', 'public');
-        }
-
-        $document = KycDocument::create([
-            'user_id' => Auth::id(),
+        KycDocument::create([
+            'user_id' => $request->user_id,
             'kyc_type' => $request->kyc_type,
             'document_type' => $request->document_type,
             'document_number' => $request->document_number,
             'front_image' => $frontImagePath,
             'back_image' => $backImagePath,
-            'expiry_date' => $request->expiry_date,
-            'status' => 'pending'
-        ]);
-
-        return response()->json([
-            'message' => 'Document uploaded successfully',
-            'document' => $document
-        ]);
-    }
-
-    public function verify(Request $request, KycDocument $document)
-    {
-        $request->validate([
-            'status' => 'required|in:approved,rejected',
-            'rejection_reason' => 'required_if:status,rejected'
-        ]);
-
-        $document->update([
             'status' => $request->status,
             'rejection_reason' => $request->rejection_reason,
-            'verified_by' => Auth::id(),
-            'verified_at' => now()
         ]);
 
-        return response()->json([
-            'message' => 'Document ' . $request->status . ' successfully',
-            'document' => $document
-        ]);
+        return response()->json(['message' => 'KYC document uploaded successfully']);
     }
 
-    public function show(KycDocument $document)
+    public function show($id)
     {
-        return response()->json($document->load(['user', 'verifier']));
+        $kycDocument = KycDocument::findOrFail($id);
+        return response()->json(['kyc_document' => $kycDocument]);
     }
 
-    public function destroy(KycDocument $document)
+    public function verify(Request $request, $id)
     {
-        if ($document->front_image) {
-            Storage::disk('public')->delete($document->front_image);
-        }
-        if ($document->back_image) {
-            Storage::disk('public')->delete($document->back_image);
-        }
+        $kycDocument = KycDocument::findOrFail($id);
+        $kycDocument->status = 'approved';
+        $kycDocument->verified_by = auth()->id();
+        $kycDocument->verified_at = now();
+        $kycDocument->save();
 
-        $document->delete();
+        return response()->json(['message' => 'KYC document verified successfully']);
+    }
 
-        return response()->json([
-            'message' => 'Document deleted successfully'
-        ]);
+    public function destroy($id)
+    {
+        $kycDocument = KycDocument::findOrFail($id);
+        $kycDocument->delete();
+
+        return response()->json(['message' => 'KYC document deleted successfully']);
+    }
+
+    public function upload(Request $request)
+    {
+        $this->store($request);
     }
 }

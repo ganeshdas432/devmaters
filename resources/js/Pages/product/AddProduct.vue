@@ -156,7 +156,8 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import axios from 'axios';
 import { useToast } from "primevue/usetoast";
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
@@ -173,13 +174,7 @@ const toast = useToast();
 const submitting = ref(false);
 const imagePreview = ref(null);
 const errors = ref({});
-
-const categories = [
-    { name: 'Electronics', code: 'electronics' },
-    { name: 'Clothing', code: 'clothing' },
-    { name: 'Food', code: 'food' },
-    // Add more categories as needed
-];
+const categories = ref([]);
 
 const form = reactive({
     name: '',
@@ -191,6 +186,27 @@ const form = reactive({
     status: 'active',
     featured: false,
     allowReviews: true
+});
+
+const fetchCategories = async () => {
+    try {
+        const response = await axios.get('/api/catlist');
+        categories.value = response.data.categories.map(category => ({
+            name: category.title,
+            code: category.id
+        }));
+    } catch (error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load categories',
+            life: 3000
+        });
+    }
+};
+
+onMounted(() => {
+    fetchCategories();
 });
 
 const onImageSelect = (event) => {

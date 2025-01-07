@@ -87,8 +87,9 @@
                 <div class="flex gap-2 justify-center">
                   <Button icon="pi pi-pencil" text rounded severity="info" @click="handleAction(slotProps.data)"
                     v-tooltip.top="'Edit Shop'" />
-                  <Button icon="pi pi-user" text rounded severity="success" @click="handleUserAsign(slotProps.data)"
-                    v-tooltip.top="'Assign User'" />
+
+                  <Button icon="pi pi-user" text rounded severity="success" @click="handleView(slotProps.data)"
+                    v-tooltip.top="'View Details'" />
                   <Button icon="pi pi-trash" text rounded severity="danger" v-tooltip.top="'Delete Shop'" />
                 </div>
               </template>
@@ -162,10 +163,9 @@ function handleAction(rowData) {
   Inertia.visit(`/shops/edit/${rowData.id}`);
 }
 
-function handleUserAsign(rowData) {
-  Inertia.visit(`/shops/asignuser/${rowData.id}`);
+function handleView(rowData) {
+  Inertia.visit(`/appuser/profile/${rowData.id}`);
 }
-
 async function updateStatus(shop) {
   try {
     const newStatus = shop.status === 'active' ? 'inactive' : 'active';

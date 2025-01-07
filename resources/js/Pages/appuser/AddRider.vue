@@ -2,7 +2,6 @@
   <Toast />
 
   <Head title="Add Rider" />
-
   <AuthenticatedLayout>
     <template #header>
       <div class="flex justify-between items-center">
@@ -12,7 +11,6 @@
         </Link>
       </div>
     </template>
-
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -57,11 +55,33 @@
                     <small class="p-error" v-if="submitted && !gender">Gender is required.</small>
                   </div>
 
+
+                </div>
+              </div>
+
+              <!-- Vehicle Information Section -->
+              <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Vehicle Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div class="field">
-                    <label for="status" class="block text-sm font-medium text-gray-700">Account Status</label>
-                    <Dropdown v-model="status" :options="statusOptions" optionLabel="label" optionValue="value"
-                      placeholder="Select status" class="w-full" :class="{ 'p-invalid': submitted && !status }" />
-                    <small class="p-error" v-if="submitted && !status">Status is required.</small>
+                    <label for="vehicle" class="block text-sm font-medium text-gray-700">Vehicle</label>
+                    <Dropdown v-model="vehicle" :options="vehicleOptions" optionLabel="name" optionValue="id"
+                      placeholder="Select vehicle" class="w-full" :class="{ 'p-invalid': submitted && !vehicle }" />
+                    <small class="p-error" v-if="submitted && !vehicle">Vehicle is required.</small>
+                  </div>
+
+                  <div class="field">
+                    <label for="vehicleNo" class="block text-sm font-medium text-gray-700">Vehicle Number</label>
+                    <InputText v-model="vehicleNo" id="vehicleNo" class="w-full"
+                      :class="{ 'p-invalid': submitted && !vehicleNo }" placeholder="Enter vehicle number" />
+                    <small class="p-error" v-if="submitted && !vehicleNo">Vehicle number is required.</small>
+                  </div>
+
+                  <div class="field">
+                    <label for="zone" class="block text-sm font-medium text-gray-700">Zone</label>
+                    <Dropdown id="zone" v-model="zone" :options="zoneOptions" optionLabel="name" optionValue="id"
+                      placeholder="Select Zone" class="w-full" :class="{ 'p-invalid': submitted && !zone }" />
+                    <small class="p-error" v-if="submitted && !zone">Zone is required.</small>
                   </div>
                 </div>
               </div>
@@ -103,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Button from 'primevue/button';
@@ -123,9 +143,10 @@ const password = ref("");
 const confirmPassword = ref("");
 const age = ref(null);
 const gender = ref(null);
-const mobile = ref("");
-const status = ref(null);
 const role = ref("rider");
+const vehicle = ref(null);
+const vehicleNo = ref("");
+const zone = ref([]);
 
 // Form state
 const submitted = ref(false);
@@ -138,18 +159,56 @@ const genderOptions = [
   { label: 'Other', value: 'other' }
 ];
 
-const statusOptions = [
-  { label: 'Active', value: '1' },
-  { label: 'Inactive', value: '0' }
-];
+
+
+const vehicleOptions = ref([]);
+const zoneOptions = ref([]);
+
+// Fetch vehicle options
+const fetchVehicles = async () => {
+  try {
+    const response = await axios.get("/api/vehicles");
+    vehicleOptions.value = response.data;
+  } catch (error) {
+    console.error("Error fetching vehicles:", error);
+  }
+};
+
+// Fetch zone options
+const fetchZones = async () => {
+  try {
+    const response = await axios.get("/api/zones");
+    zoneOptions.value = response.data.zones;
+    console.log("zoneOptions:", zoneOptions.value); // Add this line to debug
+  } catch (error) {
+    console.error("Error fetching zones:", error);
+  }
+};
+
+onMounted(() => {
+  fetchVehicles();
+  fetchZones();
+});
 
 // Form submission handler
 const handleSubmit = async () => {
   submitted.value = true;
 
+  // Debugging logs
+  console.log("name:", name.value);
+  console.log("email:", email.value);
+  console.log("password:", password.value);
+  console.log("confirmPassword:", confirmPassword.value);
+  console.log("age:", age.value);
+  console.log("gender:", gender.value);
+  console.log("mobile:", mobile.value);
+  console.log("vehicle:", vehicle.value);
+  console.log("vehicleNo:", vehicleNo.value);
+  console.log("zone:", zone.value);
+
   // Validation checks
   if (!name.value || !email.value || !password.value || !confirmPassword.value ||
-    !age.value || !gender.value || !mobile.value || !status.value) {
+    !age.value || !gender.value || !mobile.value || !vehicle.value || !vehicleNo.value || !zone.value) {
     toast.add({
       severity: 'error',
       summary: 'Validation Error',
@@ -180,14 +239,23 @@ const handleSubmit = async () => {
       age: age.value,
       gender: gender.value,
       mobile: mobile.value,
-      status: status.value,
+      status: 2,
       role: role.value,
+      zone_id: zone.value,
+    });
+
+    const riderId = response.data.user.id;
+
+    await axios.post("/api/vehicles/assign", {
+      vehicle_id: vehicle.value,
+      rider_id: riderId,
+      vehicle_number: vehicleNo.value,
     });
 
     toast.add({
       severity: 'success',
       summary: 'Success',
-      detail: 'Rider account created successfully',
+      detail: 'Rider account created and vehicle assigned successfully',
       life: 3000
     });
 
@@ -199,7 +267,9 @@ const handleSubmit = async () => {
     age.value = null;
     gender.value = null;
     mobile.value = "";
-    status.value = null;
+    vehicle.value = null;
+    vehicleNo.value = "";
+    zone.value = null;
     submitted.value = false;
 
   } catch (error) {

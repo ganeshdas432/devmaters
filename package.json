@@ -27,6 +27,7 @@
         "leaflet-draw": "^1.0.4",
         "leaflet-routing-machine": "^3.2.12",
         "primeicons": "^7.0.0",
-        "primevue": "^4.0.5"
+        "primevue": "^4.0.5",
+        "quill": "^2.0.3"
     }
 }

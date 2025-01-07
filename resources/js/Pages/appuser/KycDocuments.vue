@@ -1,12 +1,11 @@
 <template>
 
-    <Head title="Rider Management" />
+    <Head title="KYC Documents" />
 
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Rider Management</h2>
-
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">KYC Documents</h2>
             </div>
         </template>
 
@@ -18,60 +17,55 @@
                         class="mb-4 flex flex-wrap gap-4 justify-between items-center p-4 border-b bg-gray-50 rounded-t-lg">
                         <span class="p-input-icon-left w-full md:w-96">
                             <i class="pi pi-search" />
-                            <InputText v-model="searchQuery" placeholder="Search riders..." class="w-full" />
+                            <InputText v-model="searchQuery" placeholder="Search documents..." class="w-full" />
                         </span>
                         <div class="flex gap-2">
                             <Button icon="pi pi-filter" severity="secondary" label="Filters" />
                             <Button icon="pi pi-refresh" severity="secondary" rounded @click="refreshData" />
-                            <a class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 inline-flex items-center"
-                                :href="route('add.rider')">
-                                <i class="pi pi-plus mr-2"></i>
-                                Add Rider
-                            </a>
-
                         </div>
                     </div>
 
                     <!-- Enhanced DataTable -->
-                    <DataTable :value="customers" :paginator="true" :rows="10" :rowsPerPageOptions="[10, 20, 50]"
+                    <DataTable :value="documents" :paginator="true" :rows="10" :rowsPerPageOptions="[10, 20, 50]"
                         v-model:filters="filters" filterDisplay="menu" :loading="loading" stripedRows showGridlines
-                        :globalFilterFields="['name', 'mobile', 'status.title']" tableStyle="min-width: 50rem"
-                        class="p-datatable-lg">
-                        <Column field="id" header="ID" sortable style="width: 10%">
+                        :globalFilterFields="['user_id', 'kyc_type', 'document_type', 'document_number', 'status']"
+                        tableStyle="min-width: 50rem" class="p-datatable-lg">
+                        <Column field="id" header="ID" sortable style="width: 5%">
                             <template #body="{ data }">
                                 <span class="font-semibold text-gray-700">#{{ data.id }}</span>
                             </template>
                         </Column>
 
-                        <Column field="name" header="Name" sortable style="width: 25%">
+                        <Column field="user_id" header="User ID" sortable style="width: 10%">
                             <template #body="{ data }">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-                                        {{ data.name.charAt(0).toUpperCase() }}
-                                    </div>
-                                    <div>
-                                        <div class="font-medium">{{ data.name }}</div>
-                                        <div class="text-sm text-gray-500">{{ data.email }}</div>
-                                    </div>
-                                </div>
+                                <div class="font-medium">{{ data.user_id }}</div>
                             </template>
                         </Column>
 
-                        <Column field="mobile" header="Mobile" sortable style="width: 20%">
+                        <Column field="kyc_type" header="KYC Type" sortable style="width: 10%">
                             <template #body="{ data }">
-                                <div class="flex items-center gap-2">
-                                    <i class="pi pi-phone text-gray-400"></i>
-                                    {{ data.mobile }}
-                                </div>
+                                <div class="font-medium">{{ data.kyc_type }}</div>
                             </template>
                         </Column>
 
-                        <Column field="status" header="Status" sortable style="width: 15%">
+                        <Column field="document_type" header="Document Type" sortable style="width: 15%">
+                            <template #body="{ data }">
+                                <div class="font-medium">{{ data.document_type }}</div>
+                            </template>
+                        </Column>
+
+                        <Column field="document_number" header="Document Number" sortable style="width: 15%">
+                            <template #body="{ data }">
+                                <div class="font-medium">{{ data.document_number }}</div>
+                            </template>
+                        </Column>
+
+                        <Column field="status" header="Status" sortable style="width: 10%">
                             <template #body="slotProps">
-                                <Tag :value="slotProps.data.status.title"
-                                    :severity="getSeverity(slotProps.data.status.title)" class="text-xs px-3 py-1">
-                                    <i :class="getStatusIcon(slotProps.data.status.title)" class="mr-1"></i>
-                                    {{ slotProps.data.status.title }}
+                                <Tag :value="slotProps.data.status" :severity="getSeverity(slotProps.data.status)"
+                                    class="text-xs px-3 py-1">
+                                    <i :class="getStatusIcon(slotProps.data.status)" class="mr-1"></i>
+                                    {{ slotProps.data.status }}
                                 </Tag>
                             </template>
                         </Column>
@@ -80,11 +74,11 @@
                             <template #body="slotProps">
                                 <div class="flex gap-2 justify-center">
                                     <Button icon="pi pi-pencil" text rounded severity="info"
-                                        @click="handleEdit(slotProps.data)" v-tooltip.top="'Edit Rider'" />
+                                        @click="handleEdit(slotProps.data)" v-tooltip.top="'Edit Document'" />
                                     <Button icon="pi pi-eye" text rounded severity="success"
                                         v-tooltip.top="'View Details'" />
                                     <Button icon="pi pi-trash" text rounded severity="danger"
-                                        v-tooltip.top="'Delete Rider'" />
+                                        v-tooltip.top="'Delete Document'" />
                                 </div>
                             </template>
                         </Column>
@@ -107,7 +101,7 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Tooltip from 'primevue/tooltip';
 
-const customers = ref([]);
+const documents = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
 const filters = ref({
@@ -116,9 +110,11 @@ const filters = ref({
 
 const getStatusIcon = (status) => {
     switch (status) {
-        case 'Active':
+        case 'approved':
             return 'pi pi-check-circle';
-        case 'Deactive':
+        case 'pending':
+            return 'pi pi-clock';
+        case 'rejected':
             return 'pi pi-times-circle';
         default:
             return 'pi pi-question-circle';
@@ -127,10 +123,12 @@ const getStatusIcon = (status) => {
 
 const getSeverity = (status) => {
     switch (status) {
-        case 'Deactive':
+        case 'rejected':
             return 'danger';
-        case 'Active':
+        case 'approved':
             return 'success';
+        case 'pending':
+            return 'warning';
         default:
             return 'info';
     }
@@ -139,10 +137,10 @@ const getSeverity = (status) => {
 const refreshData = async () => {
     loading.value = true;
     try {
-        const response = await axios.get('/api/appuser/rider');
-        customers.value = response.data.users;
+        const response = await axios.get('/api/kyc-documents');
+        documents.value = response.data.kyc_documents;
     } catch (error) {
-        console.error('Error fetching riders data:', error);
+        console.error('Error fetching documents data:', error);
     } finally {
         loading.value = false;
     }
@@ -153,7 +151,7 @@ onMounted(() => {
 });
 
 function handleEdit(rowData) {
-    Inertia.visit(`/appuser/edit/${rowData.id}`);
+    Inertia.visit(`/appuser/edit-document/${rowData.id}`);
 }
 </script>
 

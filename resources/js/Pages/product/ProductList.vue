@@ -6,11 +6,7 @@
         <template #header>
             <div class="flex justify-between items-center">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Product Management</h2>
-                <a class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 inline-flex items-center"
-                    :href="route('product.add')">
-                    <i class="pi pi-plus mr-2"></i>
-                    Add Product
-                </a>
+
             </div>
         </template>
 
@@ -81,6 +77,18 @@
                             <Button icon="pi pi-filter" severity="secondary" label="Filters" />
                             <Button icon="pi pi-refresh" severity="secondary" rounded @click="refreshData" />
                             <Button icon="pi pi-download" severity="secondary" label="Export" @click="exportCSV" />
+                            <a class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 ml-4"
+                                :href="route('add_product')">
+                                Add Product
+                            </a>
+                            <a class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 ml-4"
+                                :href="route('categorylist')">
+                                Categories
+                            </a>
+                            <a class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 ml-4"
+                                :href="route('unitlist')">
+                                Units
+                            </a>
                         </div>
                     </div>
 
@@ -175,7 +183,7 @@
                                 <div class="flex gap-2 justify-center">
                                     <Button icon="pi pi-pencil" text rounded severity="info" @click="handleEdit(data)"
                                         v-tooltip.top="'Edit Product'" />
-                                    
+
                                     <Button icon="pi pi-trash" text rounded severity="danger"
                                         @click="handleDelete(data)" v-tooltip.top="'Delete Product'" />
                                 </div>

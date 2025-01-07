@@ -10,4 +10,7 @@ class Unit extends Model
     use HasFactory;
 
     protected $fillable=['title','value'];
+    protected $casts = [
+        'value' => 'string',
+    ];
 }

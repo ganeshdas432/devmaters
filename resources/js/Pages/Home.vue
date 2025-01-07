@@ -159,6 +159,15 @@ const items = ref([
         label: 'Contact',
         icon: 'pi pi-envelope',
         route: 'contact'
+    },
+    {
+        label: 'Download App',
+        icon: 'pi pi-download',
+        items: [
+            { label: 'Customer App', icon: 'pi pi-android', href: 'https://play.google.com/store/apps/details?id=com.example.customerapp' },
+            { label: 'Store App', icon: 'pi pi-android', href: 'https://play.google.com/store/apps/details?id=com.example.storeapp' },
+            { label: 'Rider App', icon: 'pi pi-android', href: 'https://play.google.com/store/apps/details?id=com.example.riderapp' },
+        ]
     }
 ]);
 
@@ -462,9 +471,9 @@ onMounted(() => {
                     <div>
                         <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white">Services</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">About</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white" target="_blank">Services</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white" target="_blank">About</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white" target="_blank">Contact</a></li>
                         </ul>
                     </div>
                     <div>
@@ -477,9 +486,12 @@ onMounted(() => {
                     <div>
                         <h4 class="text-lg font-semibold mb-4">Follow Us</h4>
                         <div class="flex space-x-4">
-                            <a href="#" class="text-gray-400 hover:text-white"><i class="pi pi-facebook"></i></a>
-                            <a href="#" class="text-gray-400 hover:text-white"><i class="pi pi-twitter"></i></a>
-                            <a href="#" class="text-gray-400 hover:text-white"><i class="pi pi-instagram"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white" target="_blank"><i
+                                    class="pi pi-facebook"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white" target="_blank"><i
+                                    class="pi pi-twitter"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white" target="_blank"><i
+                                    class="pi pi-instagram"></i></a>
                         </div>
                     </div>
                 </div>

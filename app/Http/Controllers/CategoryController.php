@@ -9,12 +9,16 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
+
+    public function category_list()
+    {
+        return Inertia::render('category/CategoryList');
+    }
     public function category_api()
     {
-        $response = category::all(); // Or any other query you need
+        $response = Category::all(); // Or any other query you need
         return response()->json(['categories' => $response]);
     }
-
 
     public function create()
     {
@@ -23,72 +27,70 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'shop_type' => 'required|string',
-            'image' => 'nullable|image|max:1024', // max 1MB
-            
-            
-        ]);
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('category', 'public');
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'shop_type' => 'required|string',
+                'image' => 'nullable|image|max:1024', // max 1MB
+            ]);
+
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('category', 'public');
+            }
+
+            Category::create([
+                'title' => $request->title,
+                'shop_type' => $request->shop_type,
+                'image' => $imagePath,
+            ]);
+
+            return response()->json(['success' => 'Category created successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create category.'], 500);
         }
-       
-        Category::create([
-            'title' => $request->title,
-            'shop_type' => $request->shop_type,
-            'image' => $imagePath,
-            
-        ]);
-    
-        return redirect()->route('category.add')->with('success', 'Category created successfully.');
     }
 
     public function edit($id)
-{
-    $category = Category::findOrFail($id);
-    return Inertia::render('category/EditCategory', ['category' => $category]);
-}
-
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'shop_type' => 'required|string',
-        'image' => 'nullable|image|max:1024', // max 1MB
-        
-        
-    ]);
-    // Handle image upload and shop update logic
-    $category = Category::findOrFail($id);
-
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('category', 'public');
-    } else {
-        $imagePath = $category->image;
+    {
+        $category = Category::findOrFail($id);
+        return Inertia::render('category/EditCategory', ['category' => $category]);
     }
 
-    // Update the shop with individual fields
-    $shop->update([
-        'shop_type' => $request->shop_type,
-        'image' => $imagePath,
-        'title' => $request->title,
-       
-    ]);
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'shop_type' => 'required|string',
+                'image' => 'nullable|image|max:1024', // max 1MB
+            ]);
 
-    return redirect()->route('category.add')->with('success', 'Category updated successfully.');
-}
+            $category = Category::findOrFail($id);
 
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('category', 'public');
+            } else {
+                $imagePath = $category->image;
+            }
 
+            $category->update([
+                'title' => $request->title,
+                'shop_type' => $request->shop_type,
+                'image' => $imagePath,
+            ]);
 
+            return response()->json(['success' => 'Category updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update category.'], 500);
+        }
+    }
 
     public function destroy($id)
     {
-        $item = Category::findOrFail($id);
-        $item->delete();
+        $category = Category::findOrFail($id);
+        $category->delete();
 
-        return response()->json(['message' => 'Item deleted successfully!'], 200);
+        return response()->json(['message' => 'Category deleted successfully!'], 200);
     }
-
 }

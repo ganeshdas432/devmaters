@@ -1,7 +1,7 @@
 <template>
     <div class="container mx-auto p-4">
         <!-- Cards Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-5 gap-6">
             <div v-for="card in cards" :key="card.id"
                 class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
                 <div class="p-6">
@@ -34,13 +34,22 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Card Footer -->
-                <div class="px-6 py-3 bg-gray-50 rounded-b-xl border-t">
-                    <a href="#" class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-                        View details
-                        <i class="pi pi-arrow-right ml-2"></i>
-                    </a>
+        <!-- Additional Cards Section -->
+        <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-4 gap-6 mt-16">
+            <div v-for="card in additionalCards" :key="card.id"
+                class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+                <div class="p-6">
+                    <!-- Card Header -->
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center">
+                            <i :class="['pi text-2xl mr-2', card.icon, getIconColor(card.id)]"></i>
+                            <h3 class="text-lg font-semibold text-gray-800">{{ card.title }}</h3>
+                        </div>
+                        <h3 class="text-lg font-semibold text-blue-600">10</h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,6 +105,64 @@ export default {
                     trend: 3
                 }
             ],
+            additionalCards: [
+                {
+                    id: 6,
+                    title: 'Unsigned Orders',
+                    content: '0',
+                    icon: 'pi-exclamation-circle',
+                    trend: 0
+                },
+                {
+                    id: 7,
+                    title: 'Delivery Boy Assigned',
+                    content: '0',
+                    icon: 'pi-user-plus',
+                    trend: 0
+                },
+                {
+                    id: 8,
+                    title: 'Packing',
+                    content: '0',
+                    icon: 'pi-box',
+                    trend: 0
+                },
+                {
+                    id: 9,
+                    title: 'Out for Delivery',
+                    content: '0',
+                    icon: 'pi-truck',
+                    trend: 0
+                },
+                {
+                    id: 10,
+                    title: 'Delivered',
+                    content: '0',
+                    icon: 'pi-check-circle',
+                    trend: 0
+                },
+                {
+                    id: 11,
+                    title: 'Canceled',
+                    content: '0',
+                    icon: 'pi-times-circle',
+                    trend: 0
+                },
+                {
+                    id: 12,
+                    title: 'Refunded',
+                    content: '0',
+                    icon: 'pi-undo',
+                    trend: 0
+                },
+                {
+                    id: 13,
+                    title: 'Payment Failed',
+                    content: '0',
+                    icon: 'pi-exclamation-triangle',
+                    trend: 0
+                }
+            ],
             // ... rest of your data
         };
     },
@@ -106,7 +173,15 @@ export default {
                 2: 'bg-green-100',
                 3: 'bg-purple-100',
                 4: 'bg-orange-100',
-                5: 'bg-pink-100'
+                5: 'bg-pink-100',
+                6: 'bg-red-100',
+                7: 'bg-yellow-100',
+                8: 'bg-blue-100',
+                9: 'bg-green-100',
+                10: 'bg-purple-100',
+                11: 'bg-orange-100',
+                12: 'bg-pink-100',
+                13: 'bg-red-100'
             };
             return backgrounds[id] || 'bg-gray-100';
         },
@@ -116,7 +191,15 @@ export default {
                 2: 'text-green-600',
                 3: 'text-purple-600',
                 4: 'text-orange-600',
-                5: 'text-pink-600'
+                5: 'text-pink-600',
+                6: 'text-red-600',
+                7: 'text-yellow-600',
+                8: 'text-blue-600',
+                9: 'text-green-600',
+                10: 'text-purple-600',
+                11: 'text-orange-600',
+                12: 'text-pink-600',
+                13: 'text-red-600'
             };
             return colors[id] || 'text-gray-600';
         },
@@ -128,7 +211,7 @@ export default {
         async fetchCounts() {
             try {
                 const response = await axios.get('/api/counts');
-                const { customer_count, vendor_count, order_count, rider_count, product_count } = response.data;
+                const { customer_count, vendor_count, order_count, rider_count, product_count, unsigned_orders_count, delivery_boy_assigned_count, packing_count, out_for_delivery_count, delivered_count, canceled_count, refunded_count, payment_failed_count } = response.data;
 
                 // Update cards with fetched data
                 this.cards = this.cards.map(card => {
@@ -139,6 +222,22 @@ export default {
                         case 3: content = customer_count; break;
                         case 4: content = vendor_count; break;
                         case 5: content = rider_count; break;
+                    }
+                    return { ...card, content };
+                });
+
+                // Update additional cards with fetched data
+                this.additionalCards = this.additionalCards.map(card => {
+                    let content = '0';
+                    switch (card.id) {
+                        case 6: content = unsigned_orders_count; break;
+                        case 7: content = delivery_boy_assigned_count; break;
+                        case 8: content = packing_count; break;
+                        case 9: content = out_for_delivery_count; break;
+                        case 10: content = delivered_count; break;
+                        case 11: content = canceled_count; break;
+                        case 12: content = refunded_count; break;
+                        case 13: content = payment_failed_count; break;
                     }
                     return { ...card, content };
                 });

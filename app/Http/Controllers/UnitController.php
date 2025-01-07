@@ -9,12 +9,16 @@ use App\Models\Unit;
 
 class UnitController extends Controller
 {
+
+    public function unit_list()
+    {
+        return Inertia::render('unit/List');
+    }
     public function unit_api()
     {
         $response = Unit::all(); // Or any other query you need
         return response()->json(['units' => $response]);
     }
-
 
     public function create()
     {
@@ -23,29 +27,28 @@ class UnitController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'value' => 'required|string',
-            
-            
         ]);
-    
-       
-        Unit::create([
-            'title' => $request->title,
-            'value' => $request->value,
-            
-        ]);
-    
-        return redirect()->route('unit.add')->with('success', 'Unit created successfully.');
+
+        try {
+            Unit::create([
+                'title' => $validated['title'],
+                'value' => $validated['value'],
+            ]);
+
+            return response()->json(['message' => 'Unit created successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to create unit.'], 500);
+        }
     }
 
     public function edit($id)
-{
-    $response = Unit::findOrFail($id);
-    return Inertia::render('unit/Edit', ['unit' => $response]);
-}
-
+    {
+        $response = Unit::findOrFail($id);
+        return Inertia::render('unit/Edit', ['unit' => $response]);
+    }
 
     public function destroy($id)
     {
@@ -56,22 +59,23 @@ class UnitController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'value' => 'required|string|max:255',
-    ]);
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'value' => 'required|string|max:255',
+        ]);
 
-    // Handle image upload and shop update logic
-    $response = Unit::findOrFail($id);
+        $response = Unit::findOrFail($id);
 
-    $response->update([
-        'title' => $request->title,
-        'value' =>  $request->value,
-        
-    ]);
+        try {
+            $response->update([
+                'title' => $validated['title'],
+                'value' => $validated['value'],
+            ]);
 
-    return redirect()->route('unitlist')->with('success', 'Unit updated successfully.');
-}
-
+            return response()->json(['message' => 'Unit updated successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update unit.'], 500);
+        }
+    }
 }

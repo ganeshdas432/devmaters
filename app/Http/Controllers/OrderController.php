@@ -19,6 +19,11 @@ use Illuminate\Support\Facades\DB; // Import DB facade
 
 class OrderController extends Controller
 {
+    public function order_list()
+    {
+        return Inertia::render('order/OrderList');
+        
+    }
     public function list()
     {
         return Inertia::render('order/OrderList');
