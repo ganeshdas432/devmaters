@@ -1,4 +1,5 @@
 <template>
+
   <Head title="Edit Shop" />
 
   <AuthenticatedLayout>
@@ -6,7 +7,7 @@
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Shop</h2>
     </template>
 
-    <div class="py-12">
+    <div class="py-4">
       <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
         <div class="card flex justify-center p-4">
           <form @submit.prevent="submitForm" class="w-full max-w-lg">
@@ -19,15 +20,8 @@
 
               <div>
                 <label for="shop_type" class="block text-sm font-medium mb-1">Shop Type</label>
-                <Select
-                  id="shop_type"
-                  v-model="Form.shop_type"
-                  :options="shopTypes"
-                  optionLabel="name"
-                  optionValue="code" 
-                  placeholder="Select Shop Type"
-                  class="w-full p-2 border rounded"
-                />
+                <Select id="shop_type" v-model="Form.shop_type" :options="shopTypes" optionLabel="name"
+                  optionValue="code" placeholder="Select Shop Type" class="w-full p-2 border rounded" />
               </div>
 
               <div>
@@ -36,20 +30,13 @@
               </div>
 
               <div class="card flex justify-center">
-                <FileUpload 
-                      mode="basic" 
-                      name="demo[]" 
-                      accept="image/*" 
-                      :maxFileSize="1000000" 
-                      :auto="false" 
-                      chooseLabel="Browse" 
-                      @select="onFileSelect" 
-                  />
+                <FileUpload mode="basic" name="demo[]" accept="image/*" :maxFileSize="1000000" :auto="false"
+                  chooseLabel="Browse" @select="onFileSelect" />
               </div>
-              
+
             </div>
 
-          
+
             <!-- Submit Button -->
             <Button type="submit" class="btn btn-primary w-full">Update Shop</Button>
           </form>
@@ -103,7 +90,7 @@ const submitForm = () => {
 
 
   Form.post(route('category.update', { id: props.category.id }), {
-    data: formData,  
+    data: formData,
     onSuccess: () => {
       console.log("updated");
     },

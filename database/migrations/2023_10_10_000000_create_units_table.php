@@ -16,7 +16,6 @@ class CreateUnitsTable extends Migration
         Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('value'); // Changed from integer to string
             $table->timestamps();
         });
     }

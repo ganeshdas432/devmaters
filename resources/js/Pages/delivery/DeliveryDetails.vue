@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Delivery Details" />
 
     <AuthenticatedLayout>
@@ -6,12 +7,12 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Delivery Details</h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
                 <!-- Main Content Grid with Map and Info Cards -->
                 <div v-if="delivery" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    
+
                     <!-- Delivery Information Cards on the Left -->
                     <div class="space-y-6">
                         <!-- Pickup & Drop Information -->
@@ -58,12 +59,10 @@
                     <!-- Map Section on the Right -->
                     <div class="p-6 bg-white rounded-lg shadow-lg">
                         <h3 class="text-lg font-semibold mb-4">Route Map</h3>
-                        <DeliveryMap
-                            :pickupLatitude="parseFloat(delivery.pickup_latitude)"
+                        <DeliveryMap :pickupLatitude="parseFloat(delivery.pickup_latitude)"
                             :pickupLongitude="parseFloat(delivery.pickup_longitude)"
                             :dropLatitude="parseFloat(delivery.drop_latitude)"
-                            :dropLongitude="parseFloat(delivery.drop_longitude)"
-                        />
+                            :dropLongitude="parseFloat(delivery.drop_longitude)" />
                     </div>
                 </div>
 
@@ -103,7 +102,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.space-y-6 > * + * {
+.space-y-6>*+* {
     margin-top: 1.5rem;
 }
 </style>

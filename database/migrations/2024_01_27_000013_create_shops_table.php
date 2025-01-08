@@ -12,14 +12,14 @@ return new class extends Migration
             $table->id();
             $table->string('shop_name');
             $table->string('image')->nullable();
-            $table->foreignId('vendor_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('vendor_id');
             $table->text('address');
             $table->string('mobile');
             $table->decimal('latitude', 10, 8);
             $table->decimal('longitude', 11, 8);
             $table->enum('shop_type', ['food', 'grocery', 'pharmacy', 'other'])->default('other');
             $table->enum('status', ['active', 'inactive', 'pending', 'blocked'])->default('pending');
-            $table->foreignId('zone_id')->nullable()->constrained('zones')->onDelete('set null');
+            $table->unsignedBigInteger('zone_id')->nullable();
             $table->time('opening_time')->nullable();
             $table->time('closing_time')->nullable();
             $table->decimal('minimum_order', 10, 2)->default(0);

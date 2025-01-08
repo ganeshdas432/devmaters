@@ -29,13 +29,11 @@ class UnitController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'value' => 'required|string',
         ]);
 
         try {
             Unit::create([
                 'title' => $validated['title'],
-                'value' => $validated['value'],
             ]);
 
             return response()->json(['message' => 'Unit created successfully.'], 200);
@@ -62,7 +60,6 @@ class UnitController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'value' => 'required|string|max:255',
         ]);
 
         $response = Unit::findOrFail($id);
@@ -70,7 +67,6 @@ class UnitController extends Controller
         try {
             $response->update([
                 'title' => $validated['title'],
-                'value' => $validated['value'],
             ]);
 
             return response()->json(['message' => 'Unit updated successfully.'], 200);

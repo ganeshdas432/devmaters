@@ -8,7 +8,7 @@
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Product</h2>
     </template>
 
-    <div class="py-12">
+    <div class="py-4">
       <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-4">
           <h4 class="text-lg font-semibold mr-4">Edit Product</h4>
@@ -24,8 +24,8 @@
 
               <div>
                 <label for="cat_id" class="block text-sm font-medium mb-1">Categories</label>
-                <Select id="cat_id" v-model="productForm.cat_id" :options="cats" optionLabel="title"
-                  optionValue="id" placeholder="Select Category" class="w-full  border rounded" />
+                <Select id="cat_id" v-model="productForm.cat_id" :options="cats" optionLabel="title" optionValue="id"
+                  placeholder="Select Category" class="w-full  border rounded" />
               </div>
 
               <div class="card flex justify-center">
@@ -125,12 +125,12 @@ const productForm = useForm({
   type: props.product.type || '', // Populate type
   attributes: props.product.attributes.length
     ? props.product.attributes.map(attr => ({
-        title: attr.title,
-        value: attr.value,
-        price: attr.price,
-        mrp: attr.mrp,
-        unit: attr.unit
-      }))
+      title: attr.title,
+      value: attr.value,
+      price: attr.price,
+      mrp: attr.mrp,
+      unit: attr.unit
+    }))
     : [{ title: '', value: '', price: '', mrp: '', unit: '' }], // Ensure at least one attribute is available
   image: null // This will hold the new file data if uploaded
 });

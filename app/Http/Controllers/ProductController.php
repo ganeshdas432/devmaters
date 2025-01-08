@@ -17,7 +17,7 @@ class ProductController extends Controller
 {
 
     public function product_list(){
-        return Inertia::render('product/ProductList');
+        return Inertia::render('Product/ProductList');
     }
 
     public function index()
@@ -38,13 +38,11 @@ class ProductController extends Controller
 
     public function add_product()
     {
-        return Inertia::render('product/AddProduct');
+        return Inertia::render('Product/AddProduct');
     }
 
     public function store(Request $request)
     {
-
-
         $request->validate([
             'shop_id' => 'required|exists:shops,id',
             'cat_id' => 'required|exists:categories,id',
@@ -176,7 +174,7 @@ class ProductController extends Controller
         // Fetch the product with attributes
         $product = Product::with('attributes')->findOrFail($id);
 
-        return Inertia::render('product/Edit', [
+        return Inertia::render('Product/Edit', [
             'product' => $product, // Pass the product data to the edit page
             'productId' => $product->id // Ensure productId is passed as a prop
         ]);

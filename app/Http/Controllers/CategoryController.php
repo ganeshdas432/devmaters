@@ -16,7 +16,7 @@ class CategoryController extends Controller
     }
     public function category_api()
     {
-        $response = Category::all(); // Or any other query you need
+        $response = Category::orderBy('created_at', 'desc')->get(); // Changed query to order by creation date descending
         return response()->json(['categories' => $response]);
     }
 

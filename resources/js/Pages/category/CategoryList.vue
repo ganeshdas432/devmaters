@@ -7,30 +7,35 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Categories</h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-                <div class="card p-6 mb-8">
+        <div class="py-4">
+            <div class="grid grid-cols-4 gap-4">
+                <div class="card bg-white p-6 mb-8 col-span-1">
                     <form @submit.prevent="submitForm" class="w-full">
-                        <div class="flex flex-wrap gap-4 mb-4">
-                            <div class="flex-1 min-w-[200px]">
-                                <label for="title" class="block text-sm font-medium mb-1">Category Name</label>
-                                <InputText id="title" v-model="Form.title" class="w-full p-2 border rounded" />
-                            </div>
-                            <div class="flex-1 min-w-[200px]">
-                                <label for="shop_type" class="block text-sm font-medium mb-1">Shop Type</label>
-                                <Select id="shop_type" v-model="Form.shop_type" :options="shoptype" optionLabel="name"
-                                    optionValue="code" placeholder="Select Shop Type" class="w-full  border rounded" />
-                            </div>
-                            <div class="flex-1 min-w-[200px]">
-                                <label class="block text-sm font-medium mb-1">Image</label>
-                                <FileUpload mode="basic" name="demo[]" accept="image/*" :maxFileSize="1000000"
-                                    :auto="false" chooseLabel="Browse" @select="onFileSelect" class="w-full" />
+                        <div class="card bg-white p-4">
+                            <div class="flex flex-col gap-4 mb-4">
+                                <div class="min-w-[100px]">
+                                    <label for="title" class="block text-sm font-medium">Category Name</label>
+                                    <InputText id="title" v-model="Form.title" class="w-full p-2 border rounded" />
+                                </div>
+                                <div class="min-w-[100px]">
+                                    <label for="shop_type" class="block text-sm font-medium">Shop Type</label>
+                                    <Select id="shop_type" v-model="Form.shop_type" :options="shoptype"
+                                        optionLabel="name" optionValue="code" placeholder="Select Shop Type"
+                                        class="w-full border rounded" />
+                                </div>
+                                <div class="min-w-[100px]">
+                                    <label class="block text-sm font-medium">Image</label>
+                                    <FileUpload mode="basic" name="demo[]" accept="image/*" :maxFileSize="1000000"
+                                        :auto="false" chooseLabel="Browse" @select="onFileSelect" class="w-full" />
+                                </div>
+                                <div class="min-w-[100px] flex items-end">
+                                    <Button type="submit" class="btn btn-primary w-full">Submit</Button>
+                                </div>
                             </div>
                         </div>
-                        <Button type="submit" class="btn btn-primary w-full">Submit</Button>
                     </form>
                 </div>
-                <div class="card">
+                <div class="card bg-white p-6 mb-8 col-span-3">
                     <DataTable :value="categories" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                         tableStyle="min-width: 50rem">
                         <Column field="id" header="ID" style="width: 25%"></Column>
@@ -55,8 +60,8 @@
                     </DataTable>
                 </div>
             </div>
+            <Toast ref="toast" />
         </div>
-        <Toast ref="toast" />
     </AuthenticatedLayout>
 </template>
 

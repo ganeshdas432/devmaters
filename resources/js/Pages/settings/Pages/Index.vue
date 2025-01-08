@@ -7,7 +7,7 @@
 
 </template>
 
-    <div class="py-12">
+    <div class="py-4">
       <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
           <h4 class="text-lg font-semibold mr-4">Settings</h4>
           

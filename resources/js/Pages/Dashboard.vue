@@ -5,6 +5,7 @@ import { Head } from '@inertiajs/vue3';
 </script>
 
 <template>
+
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
@@ -12,9 +13,9 @@ import { Head } from '@inertiajs/vue3';
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
-               <AdminDashboard/>
+                <AdminDashboard />
             </div>
         </div>
     </AuthenticatedLayout>

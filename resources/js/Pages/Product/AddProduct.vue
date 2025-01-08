@@ -15,7 +15,7 @@
             </div>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <form @submit.prevent="submitForm" class="p-8">
@@ -29,43 +29,55 @@
                                             <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
                                                 Product Name <span class="text-red-500">*</span>
                                             </label>
-                                            <InputText id="name" v-model="form.name" class="w-full"
-                                                :class="{ 'p-invalid': errors.name }" />
-                                            <small class="text-red-500" v-if="errors.name">{{ errors.name }}</small>
+                                            <InputText id="name" v-model="form.product_name" class="w-full"
+                                                :class="{ 'p-invalid': errors.product_name }" />
+                                            <small class="text-red-500" v-if="errors.product_name">{{
+                                                errors.product_name
+                                                }}</small>
                                         </div>
 
                                         <div>
                                             <label for="category" class="block text-sm font-medium text-gray-700 mb-1">
                                                 Category <span class="text-red-500">*</span>
                                             </label>
-                                            <Dropdown id="category" v-model="form.category" :options="categories"
+                                            <Dropdown id="category" v-model="form.cat_id" :options="categories"
                                                 optionLabel="name" optionValue="code" placeholder="Select a category"
-                                                class="w-full" :class="{ 'p-invalid': errors.category }" />
-                                            <small class="text-red-500" v-if="errors.category">{{ errors.category
+                                                class="w-full" :class="{ 'p-invalid': errors.cat_id }" />
+                                            <small class="text-red-500" v-if="errors.cat_id">{{ errors.cat_id
+                                                }}</small>
+                                        </div>
+
+                                        <div>
+                                            <label for="shop" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Shop <span class="text-red-500">*</span>
+                                            </label>
+                                            <Dropdown id="shop" v-model="form.shop_id" :options="shops"
+                                                optionLabel="name" optionValue="id" placeholder="Select a shop"
+                                                class="w-full" :class="{ 'p-invalid': errors.shop_id }" />
+                                            <small class="text-red-500" v-if="errors.shop_id">{{ errors.shop_id
                                                 }}</small>
                                         </div>
 
                                         <div class="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label for="price" class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Price <span class="text-red-500">*</span>
-                                                </label>
-                                                <InputNumber id="price" v-model="form.price" mode="currency"
-                                                    currency="USD" :minFractionDigits="2" class="w-full"
-                                                    :class="{ 'p-invalid': errors.price }" />
-                                                <small class="text-red-500" v-if="errors.price">{{ errors.price
-                                                    }}</small>
-                                            </div>
+                                            <!-- Remove price and stock fields -->
+                                        </div>
 
-                                            <div>
-                                                <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">
-                                                    Stock <span class="text-red-500">*</span>
-                                                </label>
-                                                <InputNumber id="stock" v-model="form.stock" :min="0" showButtons
-                                                    class="w-full" :class="{ 'p-invalid': errors.stock }" />
-                                                <small class="text-red-500" v-if="errors.stock">{{ errors.stock
-                                                    }}</small>
-                                            </div>
+                                        <div>
+                                            <label for="time" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Time <span class="text-red-500">*</span>
+                                            </label>
+                                            <InputNumber id="time" v-model="form.time" class="w-full"
+                                                :class="{ 'p-invalid': errors.time }" />
+                                            <small class="text-red-500" v-if="errors.time">{{ errors.time }}</small>
+                                        </div>
+
+                                        <div>
+                                            <label for="type" class="block text-sm font-medium text-gray-700 mb-1">
+                                                Type <span class="text-red-500">*</span>
+                                            </label>
+                                            <InputText id="type" v-model="form.type" class="w-full"
+                                                :class="{ 'p-invalid': errors.type }" />
+                                            <small class="text-red-500" v-if="errors.type">{{ errors.type }}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -142,6 +154,42 @@
                             </div>
                         </div>
 
+                        <div class="space-y-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Attributes</h3>
+                            <div v-for="(attribute, index) in form.attributes" :key="index"
+                                class="attribute-row space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                        <InputText v-model="attribute.title" class="w-full" required />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Value</label>
+                                        <InputText v-model="attribute.value" class="w-full" required />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                                        <InputNumber v-model="attribute.price" class="w-full" required />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">MRP</label>
+                                        <InputNumber v-model="attribute.mrp" class="w-full" required />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                                        <Dropdown v-model="attribute.unit" :options="units" optionLabel="title"
+                                            optionValue="id" class="w-full" required />
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <Button type="button" icon="pi pi-times" class="p-button-danger"
+                                            @click="removeAttribute(index)" />
+                                    </div>
+                                </div>
+                            </div>
+                            <Button type="button" label="Add Attribute" icon="pi pi-plus" class="p-button-success"
+                                @click="addAttribute" />
+                        </div>
+
                         <!-- Form Actions -->
                         <div class="flex justify-end gap-3 mt-8 pt-6 border-t">
                             <Button type="button" label="Cancel" severity="secondary" outlined
@@ -175,17 +223,22 @@ const submitting = ref(false);
 const imagePreview = ref(null);
 const errors = ref({});
 const categories = ref([]);
+const units = ref([]);
+const shops = ref([]);
 
 const form = reactive({
-    name: '',
-    category: null,
-    price: null,
-    stock: 0,
+    product_name: '',
+    cat_id: null,
+    // Remove price and stock fields
     description: '',
     image: null,
     status: 'active',
     featured: false,
-    allowReviews: true
+    allowReviews: true,
+    attributes: [],
+    shop_id: null,
+    time: null, // Add time field
+    type: '' // Add type field
 });
 
 const fetchCategories = async () => {
@@ -205,9 +258,50 @@ const fetchCategories = async () => {
     }
 };
 
+const fetchUnits = async () => {
+    try {
+        const response = await axios.get('/api/unitlist');
+        units.value = response.data.units;
+    } catch (error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load units',
+            life: 3000
+        });
+    }
+};
+
+const fetchShops = async () => {
+    try {
+        const response = await axios.get('/api/shoplist');
+        shops.value = response.data.shops.map(shop => ({
+            name: shop.shop_name,
+            id: shop.id
+        }));
+    } catch (error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load shops',
+            life: 3000
+        });
+    }
+};
+
 onMounted(() => {
     fetchCategories();
+    fetchUnits();
+    fetchShops();
 });
+
+const addAttribute = () => {
+    form.attributes.push({ title: '', value: '', price: '', mrp: '', unit: '' });
+};
+
+const removeAttribute = (index) => {
+    form.attributes.splice(index, 1);
+};
 
 const onImageSelect = (event) => {
     const file = event.files[0];
@@ -231,7 +325,15 @@ const submitForm = async () => {
     try {
         const formData = new FormData();
         Object.keys(form).forEach(key => {
-            formData.append(key, form[key]);
+            if (key === 'attributes') {
+                form[key].forEach((attribute, index) => {
+                    Object.keys(attribute).forEach(attrKey => {
+                        formData.append(`attributes[${index}][${attrKey}]`, attribute[attrKey]);
+                    });
+                });
+            } else {
+                formData.append(key, form[key]);
+            }
         });
 
         const response = await axios.post('/api/products', formData, {

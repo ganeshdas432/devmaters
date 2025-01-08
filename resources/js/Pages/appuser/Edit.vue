@@ -8,7 +8,7 @@
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit User</h2>
     </template>
 
-    <div class="py-12">
+    <div class="py-4">
       <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
         <div class="card flex justify-center p-4">
           <form @submit.prevent="submitForm" class="w-full max-w-lg">

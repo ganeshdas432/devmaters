@@ -44,7 +44,8 @@ class StatusSeeder extends Seeder
                 'icon' => 'check-double',
                 'is_active' => true,
                 'sort_order' => 5
-            ]
+            ],
+
         ];
 
         foreach ($statuses as $status) {

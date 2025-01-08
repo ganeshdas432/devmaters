@@ -63,6 +63,7 @@ Route::get('/shoplist', [ShopController::class, 'shoplistapi']);
 // Product routes
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('api.products.show');
+Route::post('/products', [ProductController::class, 'store'])->name('api.products.store');
 
 // Order routes
 Route::get('/orderlist', [OrderController::class, 'order_api']);

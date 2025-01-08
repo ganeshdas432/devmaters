@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
@@ -6,33 +7,34 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">orders</h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-4">
                     <h4 class="text-lg font-semibold mr-4">Order List</h4>
-                   
+
                 </div>
                 <div class="card">
                     <DataTable :value="orders" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]"
                         tableStyle="min-width: 50rem">
-                        <Column field="id" header="ID" ></Column>
+                        <Column field="id" header="ID"></Column>
                         <Column field="customer.name" header="Customer Name"></Column>
 
                         <Column field="subtotal" header="Subtotal" style="width: 25%"></Column>
                         <Column field="order_status.title" header="Order Status" style="width: 25%"></Column>
 
-                        <Column header="Actions"   bodyClass="text-center">
+                        <Column header="Actions" bodyClass="text-center">
                             <template #body="slotProps">
-                            <a 
-                                :href="route('orderdetailsview', { id: slotProps.data.id })" 
-                                class="p-button p-component">
-                                <i class="pi pi-eye"></i>
+                                <a :href="route('orderdetailsview', { id: slotProps.data.id })"
+                                    class="p-button p-component">
+                                    <i class="pi pi-eye"></i>
                                 </a>
 
 
-                                <Button type="button" icon="pi pi-pencil" text size="small" @click="handleEdit(slotProps.data)" />
+                                <Button type="button" icon="pi pi-pencil" text size="small"
+                                    @click="handleEdit(slotProps.data)" />
 
-                                <Button type="button" icon="pi pi-trash" text size="small" @click="handleDelete(slotProps.data)" />
+                                <Button type="button" icon="pi pi-trash" text size="small"
+                                    @click="handleDelete(slotProps.data)" />
                             </template>
                         </Column>
                     </DataTable>
@@ -70,7 +72,7 @@ onMounted(async () => {
 // Action handler for Edit click
 function handleEdit(rowData) {
     Inertia.visit(`/category/edit/${rowData.id}`);
-  }
+}
 // Action handler for Delete click
 function handleDelete(rowData) {
     if (confirm(`Are you sure you want to delete ${rowData.title}?`)) {

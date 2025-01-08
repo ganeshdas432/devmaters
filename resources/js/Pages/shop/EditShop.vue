@@ -1,4 +1,5 @@
 <template>
+
   <Head title="Edit Shop" />
 
   <AuthenticatedLayout>
@@ -6,7 +7,7 @@
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Shop</h2>
     </template>
 
-    <div class="py-12">
+    <div class="py-4">
       <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
         <div class="card flex justify-center p-4">
           <form @submit.prevent="submitForm" class="w-full max-w-lg">
@@ -18,15 +19,8 @@
               </div>
 
               <div class="card flex justify-center">
-                <FileUpload 
-                      mode="basic" 
-                      name="demo[]" 
-                      accept="image/*" 
-                      :maxFileSize="1000000" 
-                      :auto="false" 
-                      chooseLabel="Browse" 
-                      @select="onFileSelect" 
-                  />
+                <FileUpload mode="basic" name="demo[]" accept="image/*" :maxFileSize="1000000" :auto="false"
+                  chooseLabel="Browse" @select="onFileSelect" />
               </div>
             </div>
 
@@ -52,15 +46,8 @@
 
               <div>
                 <label for="shop_type" class="block text-sm font-medium mb-1">Shop Type</label>
-                <Select
-                  id="shop_type"
-                  v-model="shopForm.shop_type"
-                  :options="shopTypes"
-                  optionLabel="name"
-                  optionValue="code" 
-                  placeholder="Select Shop Type"
-                  class="w-full p-2 border rounded"
-                />
+                <Select id="shop_type" v-model="shopForm.shop_type" :options="shopTypes" optionLabel="name"
+                  optionValue="code" placeholder="Select Shop Type" class="w-full p-2 border rounded" />
               </div>
             </div>
 
@@ -80,19 +67,12 @@
             <div class="grid grid-cols-2 gap-4 mb-4">
               <div>
                 <label for="shop_type" class="block text-sm font-medium mb-1">Shop Type</label>
-                <Select
-                  id="status"
-                  v-model="shopForm.status"
-                  :options="statusTypes"
-                  optionLabel="name"
-                  optionValue="code" 
-                  placeholder="Select Status"
-                  class="w-full p-2 border rounded"
-                />
+                <Select id="status" v-model="shopForm.status" :options="statusTypes" optionLabel="name"
+                  optionValue="code" placeholder="Select Status" class="w-full p-2 border rounded" />
               </div>
             </div>
 
-           
+
 
             <!-- Submit Button -->
             <Button type="submit" class="btn btn-primary w-full">Update Shop</Button>
@@ -136,15 +116,15 @@ const shopForm = useForm({
   latitude: props.shop?.latitude || '',
   longitude: props.shop?.longitude || '',
   shop_type: props.shop?.shop_type || '',
-  status:props.shop?.status||''
+  status: props.shop?.status || ''
 });
 
 const errors = ref({});  // Initialize an empty errors object
 
 
 const onFileSelect = (event) => {
-      shopForm.image = event.files[0]; // Store the selected file
-  };
+  shopForm.image = event.files[0]; // Store the selected file
+};
 // Handle form submission
 const submitForm = () => {
 
@@ -156,7 +136,7 @@ const submitForm = () => {
   formData.append('latitude', shopForm.latitude);
   formData.append('longitude', shopForm.longitude);
   formData.append('shop_type', shopForm.shop_type);
-  formData.append('status',shopForm.status);
+  formData.append('status', shopForm.status);
 
   if (shopForm.image) {
     formData.append('image', shopForm.image);
@@ -164,7 +144,7 @@ const submitForm = () => {
 
 
   shopForm.post(route('shop.update', { id: props.shop.id }), {
-    data: formData,  
+    data: formData,
     forceFormData: true,
     onSuccess: () => {
       console.log("updated");

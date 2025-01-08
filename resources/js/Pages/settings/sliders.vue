@@ -7,26 +7,26 @@
       <h2 class="font-semibold text-xl text-gray-800 leading-tight">Add Shop</h2>
     </template>
 
-    <div class="py-12">
+    <div class="py-4">
       <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
         <div class="flex justify-between items-center mb-4">
           <h4 class="text-lg font-semibold mr-4">Settings</h4>
           <Button label="Upload" @click="visible = true" />
         </div>
 
-          <div class="space-x-4 sm:-my-px sm:ms-4 sm:flex">
-                  <NavLink :href="route('settings.company_details')" :active="route().current('settings.company_details')">
-                    Details
-                  </NavLink>
-                  <NavLink :href="route('settings.sliders')" :active="route().current('settings.sliders')">
-                    Sliders
-                  </NavLink>
-                  <NavLink :href="route('settings.charges')" :active="route().current('settings.charges')">
-                    Charges
-                  </NavLink>
-                  <NavLink :href="route('settings.pages')" :active="route().current('settings.pages')">
-                    Pages
-                  </NavLink>
+        <div class="space-x-4 sm:-my-px sm:ms-4 sm:flex">
+          <NavLink :href="route('settings.company_details')" :active="route().current('settings.company_details')">
+            Details
+          </NavLink>
+          <NavLink :href="route('settings.sliders')" :active="route().current('settings.sliders')">
+            Sliders
+          </NavLink>
+          <NavLink :href="route('settings.charges')" :active="route().current('settings.charges')">
+            Charges
+          </NavLink>
+          <NavLink :href="route('settings.pages')" :active="route().current('settings.pages')">
+            Pages
+          </NavLink>
         </div>
 
 
@@ -36,11 +36,8 @@
 
           <Column header="URL" style="width: 25%">
             <template #body="slotProps">
-              <img 
-                class="block mx-auto rounded w-48" 
-                :src="'/storage/' + slotProps.data.url" 
-                :alt="slotProps.data.name" 
-              />
+              <img class="block mx-auto rounded w-48" :src="'/storage/' + slotProps.data.url"
+                :alt="slotProps.data.name" />
             </template>
           </Column>
 
@@ -57,8 +54,8 @@
       </div>
     </div>
     <template>
-    <div class="card flex justify-center">
-        
+      <div class="card flex justify-center">
+
         <Dialog v-model:visible="visible" modal header="Edit Profile" :style="{ width: '25rem' }">
           <form @submit.prevent="submitForm" class="w-full max-w-lg">
             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -79,8 +76,8 @@
             <Button type="submit" class="btn btn-primary w-full">Add Shop</Button>
           </form>
         </Dialog>
-    </div>
-</template>
+      </div>
+    </template>
   </AuthenticatedLayout>
 </template>
 
